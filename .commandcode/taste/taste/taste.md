@@ -1,0 +1,12 @@
+# Taste
+- Prefers breaking a big, fuzzy goal into the smallest important pieces that can each be improved and judged independently. Confidence: 0.9
+- Prefers fanning out subagents: a separate builder works each piece, and a separate harsh critic with fresh context inspects the real running output (not just the code), ideally blind A/B against a reference, and names the *single biggest remaining gap*; that gap is sent back to a builder and `/loop`. Confidence: 0.9
+- Wants autonomous choices on architecture, decomposition, tools, assets, tests, and number of rounds — expects me to decide rather than asking. Confidence: 0.85
+- Explicitly does not want me to stop when something merely "works"; keep iterating until critics prefer the result over the reference or the run is stopped. Confidence: 0.9
+- Wants a simple live progress page maintained throughout long runs showing the current build, pieces being improved, critic verdicts, biggest remaining gaps, and progress over time. Confidence: 0.9
+- Judges success against an explicit "bar"/reference benchmark (e.g. original game) across criteria, and wants work measured against that bar rather than absolute completion. Confidence: 0.85
+- Verifies independently before declaring anything done: runs the typechecker, a full production build, and direct runtime-state checks (not subagent reports or a coarse vision model alone) to confirm a feature actually works. Confidence: 0.85
+- When a subagent errors mid-edit or leaves the codebase broken (e.g. a half-finished edit), verifies and repairs the code directly rather than blindly re-dispatching another subagent. Confidence: 0.8
+- Avoids modifying global/system config (e.g. an npm `omit=dev` global setting); prefers targeted command flags or local scope, and asks before touching global config. Confidence: 0.7
+- Prefers a proper `.gitignore` scaffold from the start, covering dependencies (node_modules), build output (dist), logs, editor/OS cruft (.vscode, .DS_Store), and ephemeral tool/scratchpad artifacts (Playwright output, scratchpad/) so dev artifacts never get committed. Confidence: 0.8
+- Prefers boot-critical code to fail gracefully with resilient fallbacks and a friendly message (e.g. WebGL renderer tries multiple attribute sets, then shows a panel) rather than hard-crashing when the environment can't do something. Confidence: 0.8

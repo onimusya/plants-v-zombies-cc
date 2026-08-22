@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Build Progress — Lawn Defense</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background: #10161f; color: #dfe8f0; padding: 32px; line-height: 1.5;
+  }
+  h1 { font-size: 26px; margin-bottom: 4px; color: #ffd94a; }
+  .sub { color: #8fa3b8; margin-bottom: 20px; font-size: 14px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; }
+  .card {
+    background: #17202b; border: 1px solid #26333f; border-radius: 12px;
+    padding: 18px; display: flex; flex-direction: column; gap: 8px;
+  }
+  .card h2 { font-size: 16px; color: #ffd94a; }
+  .meta { font-size: 12px; color: #8fa3b8; }
+  .verdict { font-weight: 700; font-size: 14px; padding: 6px 12px; border-radius: 8px; align-self: flex-start; }
+  .win { background: #1d5c2f; color: #9dffb0; }
+  .lose { background: #5c1d1d; color: #ff9d9d; }
+  .gap { background: #2a2333; border-left: 3px solid #b06a2f; padding: 10px 12px; border-radius: 6px; font-size: 14px; }
+  .next { background: #1d2a3a; border-left: 3px solid #4f8fd9; padding: 10px 12px; border-radius: 6px; font-size: 14px; }
+  .pieces { font-size: 13px; color: #b8c8d8; }
+  .timeline { margin-top: 28px; }
+  .timeline .t { display: flex; gap: 14px; padding: 10px 0; border-bottom: 1px solid #1e2936; font-size: 13px; }
+  .t .r { font-weight: 700; color: #ffd94a; min-width: 70px; }
+  .t .gap { flex: 1; }
+  footer { margin-top: 24px; font-size: 12px; color: #5c7188; }
+  a { color: #8fb8ff; }
+  .now { color: #9dffb0; font-weight: 700; }
+</style>
+</head>
+<body>
+<h1>🌻 Lawn Defense — build progress</h1>
+<div class="sub" id="sub">Live run: builder → critic loop vs the bar (original Plants vs. Zombies). Current build below.</div>
+<div class="grid" id="rounds"></div>
+<h2 style="margin-top:26px; font-size:18px; color:#ffd94a">Timeline</h2>
+<div class="timeline" id="timeline"></div>
+<footer>Play: <a href="/?showcase=1">showcase poster</a> · <a href="/?demo=1">live skirmish</a> · <a href="/?cam=gamewide&demo=1">gamewide</a> · <a href="/?cam=overview">overview</a> · loop rules: <a href="/loop/BAR.md">BAR.md</a></footer>
+<script>
+  async function init() {
+    const $ = (id) => document.getElementById(id);
+    let state = { rounds: [] };
+    try {
+      const res = await fetch("/loop/state.json", { cache: "no-store" });
+      state = await res.json();
+    } catch (e) {
+      $("sub").textContent = "state.json not found — create loop/state.json to drive this page.";
+    }
+    $("sub").textContent = `Live run: builder → critic loop vs the bar (original Plants vs. Zombies). ${state.rounds.length} rounds · started ${state.startedAt}.`;
+    const rounds = state.rounds;
+    const grid = $("rounds");
+  for (let i = rounds.length - 1; i >= 0; i--) {
+    const r = rounds[i];
+    const card = document.createElement("div");
+    card.className = "card";
+    const isNew = i === rounds.length - 1;
+    card.innerHTML = `
+      <h2>${isNew ? "▶ " : ""}Round ${r.round} ${isNew ? '<span class="now">(current)</span>' : ""}</h2>
+      <div class="meta">${r.time} · critic: ${r.critic}</div>
+      <div class="pieces">Pieces: ${r.pieces}</div>
+      <div class="verdict ${r.verdict.toLowerCase().includes("win") ? "win" : "lose"}">${r.verdict}</div>
+      <div class="gap"><b>Biggest gap:</b> ${r.biggestGap}</div>
+      <div class="next"><b>Next:</b> ${r.next}</div>
+    `;
+    grid.appendChild(card);
+  }
+  const tl = $("timeline");
+  [...rounds].sort((a, b) => a.round - b.round).forEach((r) => {
+    const t = document.createElement("div");
+    t.className = "t";
+    t.innerHTML = `<div class="r">R${r.round}</div><div class="gap">${r.biggestGap}</div><div class="meta">→ ${r.next}</div>`;
+    tl.appendChild(t);
+  });
+  }
+  init();
+</script>
+</body>
+</html>

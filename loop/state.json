@@ -1,0 +1,78 @@
+{
+  "title": "Lawn Defense — PVZ Low-Poly 3D",
+  "startedAt": "2026-08-22T04:40:00Z",
+  "rounds": [
+    {
+      "round": 1,
+      "time": "2026-08-22T04:40:00Z",
+      "pieces": "Base build: full game loop, 3D lawn, plants, zombies, sun, HUD",
+      "critic": "First visual pass",
+      "verdict": "Working game; LOSE vs bar",
+      "biggestGap": "Sterile tech-demo feel; no house in frame; no shadows; generic units; flat art",
+      "next": "Enrich scene diorama, add blob shadows, character details"
+    },
+    {
+      "round": 2,
+      "time": "2026-08-22T05:00:00Z",
+      "pieces": "Character builder: faces, zombie archetypes, shoot recoil, sunflower nod",
+      "critic": "Builder report + fresh visual check",
+      "verdict": "Improved; LOSE vs bar",
+      "biggestGap": "House still a flat block; environment sterile; no grounding shadows",
+      "next": "Add shadows, compact gabled house, backyard set"
+    },
+    {
+      "round": 3,
+      "time": "2026-08-22T05:10:00Z",
+      "pieces": "Grounding shadows, compact gabled house (roof/chimney/windows/door), hairstyle of backyard",
+      "critic": "Direct zoom verification",
+      "verdict": "House + backyard now read; LOSE on detail richness vs bar",
+      "biggestGap": "Combat feedback (death/impact juice) and HUD/UI charm + strategic clarity unpolished",
+      "next": "Fan out critic to name single biggest gap"
+    },
+    {
+      "round": 4,
+      "time": "2026-08-22T05:20:00Z",
+      "pieces": "Full diorama (cozy house, trees, picket fence, flowers, pond) + character faces/hats + sun pulse",
+      "critic": "Fresh-context harsh critic vs bar",
+      "verdict": "WINS on visual charm & lane readability; LOSES hard on combat feedback",
+      "biggestGap": "Deaths/hits give zero payoff: zombie quietly vanishes, no pop/corpse/particles; only a 0.35s fading sphere on hits",
+      "next": "Builder: death pop + skinned corpse + hit burst + plant-loss payoff"
+    },
+    {
+      "round": 5,
+      "time": "2026-08-22T05:35:00Z",
+      "pieces": "Combat juice: zombie death pop + grey skinned corpse, hit particle bursts + white flash + knockback, plant-loss wilt burst",
+      "critic": "Runtime state verification",
+      "verdict": "Combat feedback FIXED (verified 7 corpses + 24 particles + 4 peas active live)",
+      "biggestGap": "HUD/UI charm (LOSE) and lane/threat readability (WEAK-WIN)",
+      "next": "Builders: HUD paper-seedpack charm + zombie threat/HP readability"
+    },
+    {
+      "round": 6,
+      "time": "2026-08-22T05:50:00Z",
+      "pieces": "HUD: parchment seed-packet cards, chunky sun coin, serif wave banner, hover tooltips. 3D: zombie overhead HP chips, wall-nut damage state, danger-lane pulse",
+      "critic": "Runtime + visual verification",
+      "verdict": "HUD charm now reads as PVZ seed-packets; threat/HP readability added",
+      "biggestGap": "Animation payoff / overall polish still behind; verify vs bar with fresh critic",
+      "next": "Fresh critic round to name next single biggest gap"
+    },
+    {
+      "round": 7,
+      "time": "2026-08-22T06:10:00Z",
+      "pieces": "Deep-critic ground-truth pass (evals + pixel counts)",
+      "critic": "Fresh-context harsh critic",
+      "verdict": "WINS: visual charm, lane readability, strategic clarity, HUD polish. LOSES: combat feedback + animation payoff",
+      "biggestGap": "Combat feedback is invisible at gameplay scale: corpses ~255px total, hit particles 0.07r, danger pulse 0.10-0.17 opacity — a kill still feels like a silent vanish",
+      "next": "Builder: enlarge/contrast corpses, brighten danger pulse + chevron, bigger peas + brighter hits + death pop"
+    },
+    {
+      "round": 8,
+      "time": "2026-08-22T06:30:00Z",
+      "pieces": "Combat visibility landed: corpses 0.85 scale + dark tint, danger strip 0.30->0.46 pulse + tall red 3-arrow marker, peas 0.20r emissive + trail, hits 0.12r bright pops, kill squash-flash-pop",
+      "critic": "Runtime + visual verification",
+      "verdict": "Corpses now register clearly (multiple visible per frame); danger arrow + strip active on deepest lane; tsc + prod build clean",
+      "biggestGap": "Remaining: animation/game-feel liveliness and in-motion combat framing — best judged on a live clip, not stills",
+      "next": "Optional next loop: motion/game-feel pass + 720p gameplay clip critique"
+    }
+  ]
+}
