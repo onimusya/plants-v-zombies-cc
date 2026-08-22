@@ -483,6 +483,9 @@ export class Game {
     const { group, hat } = buildZombie(type);
     const zx = x ?? LAWN_RIGHT + 8 + Math.random() * 6;
     group.position.set(zx, 0, rowToZ(row));
+    // The zombie mesh faces local +Z but walks toward -X (the house); rotate it
+    // so its face points the way it's walking.
+    group.rotation.y = -Math.PI / 2;
     (group.children[0] as any).userData.hat = hat;
     this.group.add(group);
     // overhead HP chip, one per zombie (own fill mesh so it scales per entity)

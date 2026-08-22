@@ -122,9 +122,9 @@ export class SceneSetup {
     const PX = LAWN_LEFT; // house sits just left of the lawn edge
     // Compact house: depth ~7 (not the whole lawn), tucked fully left of the lawn
     // so its rotated footprint (which spans ~±4.4 in X) never occludes a column.
-    const dH = 7.2;
+    const dH = 6.8;
     const HZ = LAWN_FRONT + 2.4; // front-ish, closer to camera
-    const hx = PX - 5.2;         // center x, clear of the lawn (max extent ≈ -0.8)
+    const hx = PX - 8.2;         // center x: footprint spans ≈[-12.6,-3.8], far from the lawn
     const hz = HZ + dH / 2;      // center z
     const wallW = 5.2;
     const wallH = 6.6;
