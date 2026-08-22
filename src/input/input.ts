@@ -4,22 +4,29 @@ import { COLS, ROWS, CELL_W, CELL_D, LAWN_LEFT, LAWN_FRONT, colToX, rowToZ } fro
 import { buildPlant } from "../visuals/meshes";
 import type { Game } from "../game/game";
 import type { HUD } from "../ui/hud";
+import type { CameraControls } from "./cameraControls";
 
 export class Input {
   private raycaster = new THREE.Raycaster();
   private ndc = new THREE.Vector2();
   private groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
   private ghost: THREE.Object3D | null = null;
+  // press tracking so planting happens only on a stable tap (not a camera drag)
+  private press: { id: number; x: number; y: number } | null = null;
+  private static TAP_DEAD_ZONE = 10;
 
   constructor(
     private camera: THREE.PerspectiveCamera,
     private game: Game,
     private hud: HUD,
-    private renderer: THREE.WebGLRenderer
+    private renderer: THREE.WebGLRenderer,
+    private controls: CameraControls
   ) {
     const el = renderer.domElement;
     el.addEventListener("pointerdown", (e) => this.onDown(e));
     el.addEventListener("pointermove", (e) => this.onMove(e));
+    el.addEventListener("pointerup", (e) => this.onUp(e));
+    el.addEventListener("pointercancel", () => { this.press = null; });
     el.addEventListener("contextmenu", (e) => e.preventDefault());
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && this.hud.selectedType) {
@@ -33,15 +40,37 @@ export class Input {
     this.setNdc(e);
     this.raycaster.setFromCamera(this.ndc, this.camera);
 
+    // collecting sun acts immediately on press (feels snappy)
     if (this.pickSun()) {
       e.preventDefault();
+      this.press = null;
       return;
     }
-    if (!this.hud.selectedType) return;
+    // only a primary tap or mouse click begins planting
+    if (e.button !== 0 && e.pointerType !== "touch") return;
+    this.press = { id: e.pointerId, x: e.clientX, y: e.clientY };
+    // hide the ghost while not hovering a valid cell yet
+    this.setNdcGhost();
+  }
 
+  private onUp(e: PointerEvent) {
+    if (this.press && e.pointerId === this.press.id) {
+      const wasTap =
+        Math.hypot(e.clientX - this.press.x, e.clientY - this.press.y) <= Input.TAP_DEAD_ZONE;
+      const cameraMoved = this.controls.active || this.controls.isTouchGesture;
+      this.press = null;
+      if (!wasTap || cameraMoved) return; // it was a drag, don't place
+      this.placeSelectedAt(e);
+    }
+  }
+
+  private placeSelectedAt(e: PointerEvent) {
+    if (!this.hud.selectedType) return;
+    this.setNdc(e);
+    this.raycaster.setFromCamera(this.ndc, this.camera);
     const cell = this.pickCell();
     if (!cell) return;
-    if (this.hud.selectedType && this.game.placePlant(this.hud.selectedType, cell.col, cell.row)) {
+    if (this.game.placePlant(this.hud.selectedType, cell.col, cell.row)) {
       this.hud.triggerCooldown(this.hud.selectedType);
       if (!this.game.canAfford(this.hud.selectedType)) {
         const t = this.hud.selectedType;
@@ -49,6 +78,11 @@ export class Input {
         this.setGhostVisible(false);
       }
     }
+  }
+
+  private setNdcGhost() {
+    // refresh raycast origin helpers if needed
+    this.raycaster.setFromCamera(this.ndc, this.camera);
   }
 
   private onMove(e: PointerEvent) {

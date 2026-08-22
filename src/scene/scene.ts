@@ -120,10 +120,11 @@ export class SceneSetup {
     // from gameplay rather than as a featureless side wall.
     h.rotation.y = Math.PI / 2;
     const PX = LAWN_LEFT; // house sits just left of the lawn edge
-    // Compact house: depth ~7 (not the whole lawn), tucked at the left.
+    // Compact house: depth ~7 (not the whole lawn), tucked fully left of the lawn
+    // so its rotated footprint (which spans ~±4.4 in X) never occludes a column.
     const dH = 7.2;
     const HZ = LAWN_FRONT + 2.4; // front-ish, closer to camera
-    const hx = PX - 2.4;         // center x
+    const hx = PX - 5.2;         // center x, clear of the lawn (max extent ≈ -0.8)
     const hz = HZ + dH / 2;      // center z
     const wallW = 5.2;
     const wallH = 6.6;

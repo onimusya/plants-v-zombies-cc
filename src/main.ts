@@ -45,7 +45,6 @@ app.appendChild(renderer.domElement);
 
 const game = new Game(scene);
 const hud = new HUD(game, app);
-const input = new Input(camera, game, hud, renderer);
 
 const params = new URLSearchParams(location.search);
 const showcase = params.get("showcase") === "1";
@@ -54,11 +53,12 @@ const cam = params.get("cam") ?? "game";
 const activeCam = (["portrait", "overview", "low", "gamewide"] as const).includes(cam as any) ? (cam as any) : "game";
 sceneSetup.setCameraPreset(showcase || demo ? activeCam : "game");
 
-if (showcase) seedShowcase();
-if (demo) seedDemo();
-
 // Orbit controls created AFTER the camera preset so they adopt the applied view.
 const controls = new CameraControls(camera, renderer.domElement);
+const input = new Input(camera, game, hud, renderer, controls);
+
+if (showcase) seedShowcase();
+if (demo) seedDemo();
 
 // debug controls for critics
 (window as any).__pvz = {
@@ -154,7 +154,7 @@ resize();
 
 // Small hint for the new camera controls (auto-fades after a few seconds).
 const hint = document.createElement("div");
-hint.textContent = "Drag (right button) to rotate · Scroll to zoom · Double-click to reset";
+hint.textContent = "Drag to rotate · Scroll / pinch to zoom · Two fingers to pan · Tap to plant · Double-tap to reset";
 Object.assign(hint.style, {
   position: "absolute", bottom: "128px", left: "50%", transform: "translateX(-50%)",
   background: "rgba(15,26,15,.6)", color: "#eaf3dd", padding: "6px 14px",
