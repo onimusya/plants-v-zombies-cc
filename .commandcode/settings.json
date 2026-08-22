@@ -29,7 +29,18 @@
       "Shell(cd /home/francishor/Projects/plants-v-zombies-cc && playwright-cli goto \"http://localhost:5174/?demo=1&cam=gamewide\" >/dev/null 2>&1; playwright-cli --raw eval \"(()=>{ var g=window.__pvz.game; var m=g.threatMarker; var zrows=g.zombies.map(z=>Math.round(z.x)); return JSON.stringify({markerVisible:m&&m.visible, zcount:g.zombies.length, zx:zrows}); })()\" 2>&1 | tail -1)",
       "Shell(cd /home/francishor/Projects/plants-v-zombies-cc && playwright-cli goto \"http://localhost:5174/\" >/dev/null 2>&1; echo \"game title:\"; playwright-cli --raw eval \"document.title\" 2>&1 | tail -1; playwright-cli console 2>&1 | grep -icE \"\\[ERROR\\]\" ; echo \"---progress---\"; playwright-cli goto \"http://localhost:5174/loop/progress.html\" >/dev/null 2>&1; playwright-cli --raw eval \"document.querySelectorAll('.card').length + ' rounds / ' + document.querySelectorAll('.t').length + ' timeline'\" 2>&1 | tail -1)",
       "Shell(git:*)",
-      "Shell(cd /home/francishor/Projects/plants-v-zombies-cc && git branch -m main && git add -A && git commit -F - <<'EOF' Initial commit: low-poly 3D tower-defense game (Plants vs. Zombies-style) A Three.js-based 3D tower-defense game with a full game loop: five-lane checkered lawn, five plants, five zombie archetypes, pea projectiles, collectible suns, wave system, and a live progress page tracking the builder/critic loop against the bar. Includes cozy low-poly diorama (gabled house, picket fence, trees, flower beds, pond), character faces and hats, combat feedback (death pops, corpses, hit particles, danger-lane pulse), and a parchment seed-packet HUD. Co-authored-by: CommandCodeBot <noreply@commandcode.ai> EOF)"
+      "Shell(cd /home/francishor/Projects/plants-v-zombies-cc && git branch -m main && git add -A && git commit -F - <<'EOF' Initial commit: low-poly 3D tower-defense game (Plants vs. Zombies-style) A Three.js-based 3D tower-defense game with a full game loop: five-lane checkered lawn, five plants, five zombie archetypes, pea projectiles, collectible suns, wave system, and a live progress page tracking the builder/critic loop against the bar. Includes cozy low-poly diorama (gabled house, picket fence, trees, flower beds, pond), character faces and hats, combat feedback (death pops, corpses, hit particles, danger-lane pulse), and a parchment seed-packet HUD. Co-authored-by: CommandCodeBot <noreply@commandcode.ai> EOF)",
+      "Shell(which:*)",
+      "Shell(gh:*)",
+      "Shell(if:*)",
+      "Shell([:*)",
+      "Shell(then:*)",
+      "Shell(else:*)",
+      "Shell(fi:*)",
+      "Shell(cd /home/francishor/Projects/plants-v-zombies-cc && gh workflow run \"Deploy to GitHub Pages\" --repo onimusya/plants-v-zombies-cc 2>&1; echo \"EXIT=${?}\")",
+      "Shell(curl -s -o /dev/null -w HTTP %{http_code}\\n https://onimusya.github.io/plants-v-zombies-cc/)",
+      "Shell(curl -s https://onimusya.github.io/plants-v-zombies-cc/ 2 >& 1)",
+      "Shell(cd /tmp && cp /dev/null /dev/null; html=$(curl -s https://onimusya.github.io/plants-v-zombies-cc/); echo \"$html\" | grep -oE '(href|src)=\"[^\"]*\"' | head -8; asset=$(echo \"$html\" | grep -oE 'src=\"[^\"]*\\.js\"' | head -1 | sed -e 's/src=\"//' -e 's/\"//'); echo \"JS asset: $asset\"; curl -s -o /dev/null -w \"asset HTTP %{http_code}\\n\" \"https://onimusya.github.io/plants-v-zombies-cc/$asset\")"
     ],
     "deny": [],
     "defaultMode": "default"

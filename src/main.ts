@@ -4,6 +4,7 @@ import { SceneSetup } from "./scene/scene";
 import { Game } from "./game/game";
 import { HUD } from "./ui/hud";
 import { Input } from "./input/input";
+import { CameraControls } from "./input/cameraControls";
 import { buildSun } from "./visuals/meshes";
 import { colToX, rowToZ, ROWS } from "./core/constants";
 
@@ -56,11 +57,15 @@ sceneSetup.setCameraPreset(showcase || demo ? activeCam : "game");
 if (showcase) seedShowcase();
 if (demo) seedDemo();
 
+// Orbit controls created AFTER the camera preset so they adopt the applied view.
+const controls = new CameraControls(camera, renderer.domElement);
+
 // debug controls for critics
 (window as any).__pvz = {
   game,
   sceneSetup,
   camera,
+  controls,
   pause: () => game.pause(),
   resume: () => game.resume(),
   step: () => { game.pause(); },
@@ -132,9 +137,31 @@ function seedDemo() {
   for (const [r, x] of zombies) game.spawnZombie(Math.random() < 0.2 ? "cone" : "basic", r, x);
 }
 
-window.addEventListener("resize", () => {
-  sceneSetup.resize(window.innerWidth, window.innerHeight);
-  renderer.setSize(window.innerWidth, window.innerHeight);
+// Auto-resize the scene to the container/browser/iframe size, keeping the canvas
+// crisp on any DPR. Reads from the #app container (filled to the window via CSS),
+// so window resizes, iframe embeds and DPR changes all stay in sync.
+const appRoot: HTMLElement = document.getElementById("app")!;
+function resize() {
+  const w = appRoot.clientWidth || window.innerWidth;
+  const h = appRoot.clientHeight || window.innerHeight;
+  sceneSetup.resize(w, h);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setSize(w, h); // updateStyle=true so the canvas CSS matches the size
+}
+new ResizeObserver(resize).observe(appRoot);
+window.addEventListener("resize", resize);
+resize();
+
+// Small hint for the new camera controls (auto-fades after a few seconds).
+const hint = document.createElement("div");
+hint.textContent = "Drag (right button) to rotate · Scroll to zoom · Double-click to reset";
+Object.assign(hint.style, {
+  position: "absolute", bottom: "128px", left: "50%", transform: "translateX(-50%)",
+  background: "rgba(15,26,15,.6)", color: "#eaf3dd", padding: "6px 14px",
+  borderRadius: "999px", fontSize: "12px", pointerEvents: "none", zIndex: "10",
+  transition: "opacity 1s", border: "1px solid rgba(255,255,255,.15)",
 });
+app.appendChild(hint);
+setTimeout(() => { hint.style.opacity = "0"; }, 4000);
 
 loop();
