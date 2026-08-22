@@ -115,17 +115,21 @@ export class SceneSetup {
 
   private buildHouse() {
     const h = new THREE.Group();
-    // Rotate the whole house so its detailed front (door, windows, gable peak)
-    // faces +X (toward the lawn/camera) instead of +Z, so it reads as a house
-    // from gameplay rather than as a featureless side wall.
+    // Rotate so the detailed front (door, windows, gable peak) faces the lawn
+    // (+X): the house sits just past the LEFT (far) end of the lawn, which is the
+    // end farthest from the camera.
     h.rotation.y = Math.PI / 2;
-    const PX = LAWN_LEFT; // house sits just left of the lawn edge
-    // Compact house: depth ~7 (not the whole lawn), tucked fully left of the lawn
-    // so its rotated footprint (which spans ~±4.4 in X) never occludes a column.
+    // Small house at the far end of the lawn, clear of play + zombie path.
+    // Keep the detail layout constants (windows/door/roof positions) and shrink the
+    // whole group uniformly so all pieces scale together.
+    const S = 0.45; // overall size factor (a clearly small house)
+    h.scale.setScalar(S);
     const dH = 6.8;
-    const HZ = LAWN_FRONT + 2.4; // front-ish, closer to camera
-    const hx = PX - 8.2;         // center x: footprint spans ≈[-12.6,-3.8], far from the lawn
-    const hz = HZ + dH / 2;      // center z
+    const HZ = LAWN_FRONT + 2.4;
+    // design-space center x placed so that the SCALED house center lands well past
+    // the lawn's left end (group position scales by S about the origin)
+    const hx = (LAWN_LEFT - 3.0) / S;
+    const hz = HZ + dH / 2;
     const wallW = 5.2;
     const wallH = 6.6;
 
